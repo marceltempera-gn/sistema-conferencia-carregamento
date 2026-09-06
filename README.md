@@ -1,32 +1,42 @@
 # Sistema de Conferência de Carregamento
 
-Projeto de portfólio inspirado em um problema real observado no processo de expedição de uma indústria.
+Projeto de portfólio inspirado em um problema real observado no processo de expedição industrial.
 
-O objetivo é demonstrar como tecnologia, automação de processos e desenvolvimento de sistemas podem ser aplicados para aumentar a segurança e a rastreabilidade durante a conferência de carregamentos.
+O objetivo é demonstrar como tecnologia, automação de processos e desenvolvimento de sistemas podem aumentar a segurança e a rastreabilidade durante a conferência de carregamentos.
 
-> Este repositório é uma versão demonstrativa e sanitizada para portfólio.
-> Não contém dados, credenciais, infraestrutura ou informações confidenciais da empresa onde o problema original foi observado.
+> **Versão pública e sanitizada.** Este repositório não contém dados, credenciais, infraestrutura, nomes de bancos internos, endereços de rede ou informações confidenciais da empresa onde o problema original foi observado.
 
-## O problema
+## Demo
 
-Durante o carregamento de pedidos, é necessário garantir que todas as peças previstas em um romaneio sejam corretamente carregadas.
+**Aplicação:** https://marceltempera-gn.github.io/sistema-conferencia-carregamento/
 
-Entre os possíveis problemas estão:
+Romaneio fictício utilizado na demonstração: `ROM-2026-001`
+
+Alguns códigos para teste:
+
+- `P000001-001` — peça correta;
+- leia `P000001-001` novamente — duplicidade;
+- `P000002-001` — peça de outro romaneio;
+- `ABC-123` — etiqueta inválida.
+
+A demo também permite simular queda de conexão, armazenamento local de leituras e posterior sincronização.
+
+## Problema observado
+
+Durante o carregamento de pedidos, é necessário garantir que todas as peças previstas em um romaneio sejam corretamente carregadas. Entre os riscos do processo estão:
 
 - peças esquecidas;
 - leituras duplicadas;
 - peças pertencentes a outro romaneio;
 - dificuldade para acompanhar itens pendentes;
-- pouca rastreabilidade da conferência;
+- pouca rastreabilidade das conferências;
 - oscilações de conexão no ambiente industrial.
 
-## A solução
+## Solução demonstrada
 
-A proposta é uma aplicação web de conferência de carregamento.
+A aplicação permite abrir um romaneio fictício e conferir individualmente cada etiqueta.
 
-O operador abre um romaneio e realiza a conferência das peças individualmente através do código presente na etiqueta.
-
-O sistema deve identificar situações como:
+A regra de negócio identifica:
 
 - peça correta;
 - peça já conferida;
@@ -34,62 +44,100 @@ O sistema deve identificar situações como:
 - código inválido;
 - peça não encontrada.
 
-Os itens são organizados entre:
+Os itens são organizados entre **Pendentes**, **Lidas** e **Todas**, e o carregamento só pode ser finalizado quando não existem peças pendentes.
 
-- Pendentes
-- Conferidos
-- Todos
+A tela também mantém um pequeno histórico de auditoria e possui um modo offline demonstrativo.
 
-O carregamento só poderá ser finalizado quando não existirem peças pendentes.
-
-## Demonstração
-
-A versão pública utilizará somente dados fictícios.
-
-Exemplo:
-
-Romaneio: `ROM-2026-001`
-
-Peças:
-
-`P000001-001`  
-`P000001-002`  
-`P000001-003`
-
-Assim será possível testar o fluxo da aplicação sem utilizar qualquer informação real da empresa.
-
-## Tecnologias
-
-Tecnologias previstas para a versão demonstrativa:
+## Tecnologias da versão pública
 
 - React
 - TypeScript
 - Vite
-- Supabase
+- LocalStorage
 - Git
 - GitHub
+- GitHub Actions
+- GitHub Pages
 
-Outros conceitos estudados durante o desenvolvimento:
+## Conceitos aplicados
 
-- APIs
-- HTTP
-- JSON
-- Banco de dados
-- Autenticação
-- Regras de negócio
-- Integração de sistemas
-- Funcionamento offline
-- Sincronização de dados
-- Automação de processos
-- Levantamento de requisitos
+- levantamento de requisitos;
+- regras de negócio;
+- validação de dados;
+- estado de aplicação;
+- funcionamento offline;
+- sincronização;
+- idempotência como requisito de API;
+- auditoria de eventos;
+- responsividade;
+- versionamento;
+- CI/CD;
+- segurança e sanitização de informações.
 
-## Arquitetura planejada
+## API demonstrativa
+
+A versão publicada funciona inteiramente com dados fictícios no navegador para permanecer segura e fácil de testar.
+
+Também foi documentado um contrato de API que representa como um backend poderia atender à solução sem revelar qualquer integração real.
+
+➡️ [Ver documentação da API](docs/api.md)
+
+Exemplo de arquitetura:
 
 ```text
-Usuário
+Operador
    ↓
-Aplicação Web
+Frontend React + TypeScript
    ↓
 API / Backend
    ↓
-Banco de Dados
+Banco demonstrativo
+```
+
+## Relação com o projeto que inspirou a demo
+
+A ideia nasceu do contato com processos reais de produção e expedição em ambiente industrial e da necessidade de melhorar a conferência e a rastreabilidade do carregamento.
+
+Durante a exploração técnica da solução original, também houve contato com conceitos e tecnologias como Supabase, autenticação, C#/.NET, SQL Server, APIs e integração de sistemas. Esses componentes não são expostos neste repositório público quando dependem de infraestrutura ou informações internas.
+
+## Estrutura
+
+```text
+.
+├── .github/workflows/      # deploy automático
+├── docs/                   # documentação técnica
+├── src/                    # aplicação React/TypeScript
+├── index.html
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
+```
+
+## Executar localmente
+
+```bash
+npm install
+npm run dev
+```
+
+Build de produção:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Próximas evoluções
+
+- adicionar leitura por câmera em navegadores compatíveis;
+- separar a camada de Mock API do frontend;
+- criar backend demonstrativo independente;
+- adicionar autenticação de demonstração;
+- criar testes automatizados;
+- ampliar a documentação de arquitetura.
+
+## Autor
+
+**Marcel Lourenço**
+
+Projeto desenvolvido como estudo e portfólio durante minha transição para a área de Tecnologia, com interesse em automação de processos, sistemas ERP e Dados/BI.
