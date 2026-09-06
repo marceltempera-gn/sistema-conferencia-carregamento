@@ -19,8 +19,15 @@ type ScanEvent = {
   offline?: boolean
 }
 
+type Notice = {
+  type: 'success' | 'warning' | 'error' | 'info'
+  text: string
+}
+
 const MANIFEST_NUMBER = 'ROM-2026-001'
 const STORAGE_KEY = 'portfolio-loading-demo-v1'
+const GITHUB_URL = 'https://github.com/marceltempera-gn/sistema-conferencia-carregamento'
+const API_DOCS_URL = `${GITHUB_URL}/blob/main/docs/api.md`
 
 const ITEMS: Item[] = Array.from({ length: 10 }, (_, index) => ({
   code: `P000001-${String(index + 1).padStart(3, '0')}`,
@@ -60,7 +67,7 @@ function App() {
   const [tab, setTab] = useState<'pending' | 'read' | 'all'>('pending')
   const [offline, setOffline] = useState(false)
   const [finished, setFinished] = useState(false)
-  const [notice, setNotice] = useState<{ type: 'success' | 'warning' | 'error' | 'info'; text: string }>({
+  const [notice, setNotice] = useState<Notice>({
     type: 'info',
     text: 'Demo pronta. Leia ou digite uma etiqueta fictícia.',
   })
@@ -74,6 +81,8 @@ function App() {
   const read = ITEMS.filter((item) => acceptedSet.has(item.code))
   const visible = tab === 'pending' ? pending : tab === 'read' ? read : ITEMS
   const progress = Math.round((accepted.length / ITEMS.length) * 100)
+  const lastEvent = events[0]
+  const noticeIcon = notice.type === 'success' ? '✓' : notice.type === 'warning' ? '!' : notice.type === 'error' ? '×' : 'i'
 
   function addEvent(code: string, result: EventResult, message: string, wasOffline = false) {
     setEvents((current) => [
@@ -174,9 +183,12 @@ function App() {
             <span>Projeto demonstrativo de portfólio</span>
           </div>
         </div>
+
         <div className="top-actions">
           <span className={`connection ${offline ? 'offline' : 'online'}`}>{offline ? '● Offline simulado' : '● Online'}</span>
           <button className="button ghost" onClick={toggleConnection}>{offline ? 'Restaurar conexão' : 'Simular offline'}</button>
+          <a className="button ghost action-link" href={GITHUB_URL} target="_blank" rel="noreferrer">Ver no GitHub ↗</a>
+          <a className="button ghost action-link" href={API_DOCS_URL} target="_blank" rel="noreferrer">API Docs ↗</a>
         </div>
       </header>
 
@@ -197,38 +209,50 @@ function App() {
           <article><span>Fila offline</span><strong>{queue.length}</strong><small>aguardando sync</small></article>
         </section>
 
-        <section className="grid-main">
-          <div className="panel scanner-panel">
-            <div className="panel-heading">
-              <div><p className="eyebrow">LEITURA</p><h2>Conferir etiqueta</h2></div>
-              <span className="format">P000000-000</span>
-            </div>
-
-            <form onSubmit={submit} className="scan-form">
-              <input autoFocus value={scan} onChange={(event) => setScan(event.target.value)} placeholder="Digite uma etiqueta fictícia" aria-label="Código da etiqueta" />
-              <button className="button primary">Conferir</button>
-            </form>
-
-            <div className={`notice ${notice.type}`}>{notice.text}</div>
-
-            <div className="test-codes">
-              <span>Códigos rápidos para testar:</span>
-              <button onClick={() => applyScan('P000001-001')}>Correta</button>
-              <button onClick={() => applyScan('P000001-001')}>Duplicada</button>
-              <button onClick={() => applyScan('P000002-001')}>Outro romaneio</button>
-              <button onClick={() => applyScan('ABC-123')}>Inválida</button>
-            </div>
+        <section className={`panel scanner-panel feedback-${notice.type}`}>
+          <div className="panel-heading">
+            <div><p className="eyebrow">LEITURA</p><h2>Conferir etiqueta</h2></div>
+            <span className="format">P000000-000</span>
           </div>
 
-          <aside className="panel architecture">
-            <p className="eyebrow">ARQUITETURA DA DEMO</p>
-            <h2>Fluxo simplificado</h2>
-            <div className="flow">
-              <span>Operador</span><b>↓</b><span>React + TypeScript</span><b>↓</b><span>Mock API / LocalStorage</span><b>↓</b><span>Dados fictícios</span>
-            </div>
-            <p className="muted small">A versão pública não se conecta a sistemas, redes ou bancos internos da empresa.</p>
-          </aside>
+          <form onSubmit={submit} className="scan-form">
+            <input autoFocus value={scan} onChange={(event) => setScan(event.target.value)} placeholder="Digite uma etiqueta fictícia" aria-label="Código da etiqueta" />
+            <button className="button primary">Conferir</button>
+          </form>
+
+          <div className={`notice ${notice.type}`} role="status" aria-live="polite">
+            <span className="notice-icon" aria-hidden="true">{noticeIcon}</span>
+            <span>{notice.text}</span>
+          </div>
+
+          <div className="test-codes">
+            <span>Códigos rápidos para testar:</span>
+            <button className="quick-success" onClick={() => applyScan('P000001-001')}>✓ Correta</button>
+            <button className="quick-warning" onClick={() => applyScan('P000001-001')}>! Duplicada</button>
+            <button className="quick-error" onClick={() => applyScan('P000002-001')}>× Outro romaneio</button>
+            <button className="quick-neutral" onClick={() => applyScan('ABC-123')}>? Inválida</button>
+          </div>
         </section>
+
+        <details className="panel architecture compact-architecture">
+          <summary>
+            <div>
+              <p className="eyebrow">COMO FUNCIONA TECNICAMENTE</p>
+              <h2>Arquitetura da demonstração</h2>
+            </div>
+            <span className="summary-hint">Ver detalhes</span>
+          </summary>
+          <div className="architecture-content">
+            <div className="flow flow-horizontal">
+              <span>Operador</span><b>→</b><span>React + TypeScript</span><b>→</b><span>Mock API / LocalStorage</span><b>→</b><span>Dados fictícios</span>
+            </div>
+            <p className="muted small">A versão pública não se conecta a sistemas, redes ou bancos internos da empresa. A integração original é representada aqui apenas por contratos e dados fictícios.</p>
+            <div className="resource-links">
+              <a href={GITHUB_URL} target="_blank" rel="noreferrer">Repositório público ↗</a>
+              <a href={API_DOCS_URL} target="_blank" rel="noreferrer">Documentação da API ↗</a>
+            </div>
+          </div>
+        </details>
 
         <section className="panel items-panel">
           <div className="panel-heading responsive-heading">
@@ -240,13 +264,14 @@ function App() {
             </div>
           </div>
 
-          <div className="table-wrap">
+          <div className="table-wrap desktop-items">
             <table>
               <thead><tr><th>Etiqueta</th><th>Pedido</th><th>Descrição</th><th>Status</th></tr></thead>
               <tbody>
                 {visible.map((item) => {
                   const isRead = acceptedSet.has(item.code)
-                  return <tr key={item.code}>
+                  const isRecent = lastEvent?.code === item.code
+                  return <tr className={isRecent ? `recent-row ${lastEvent.result}` : ''} key={item.code}>
                     <td><code>{item.code}</code></td>
                     <td>{item.order}</td>
                     <td>{item.description}</td>
@@ -256,6 +281,23 @@ function App() {
               </tbody>
             </table>
           </div>
+
+          <div className="mobile-items">
+            {visible.map((item) => {
+              const isRead = acceptedSet.has(item.code)
+              const isRecent = lastEvent?.code === item.code
+              return <article className={`item-card ${isRecent ? `recent-card ${lastEvent.result}` : ''}`} key={item.code}>
+                <div className="item-card-top">
+                  <code>{item.code}</code>
+                  <span className={`item-status ${isRead ? 'read' : 'pending'}`}>{isRead ? '✓ Conferida' : '• Pendente'}</span>
+                </div>
+                <dl>
+                  <div><dt>Pedido</dt><dd>{item.order}</dd></div>
+                  <div><dt>Descrição</dt><dd>{item.description}</dd></div>
+                </dl>
+              </article>
+            })}
+          </div>
         </section>
 
         <section className="grid-bottom">
@@ -263,7 +305,7 @@ function App() {
             <div className="panel-heading"><div><p className="eyebrow">AUDITORIA</p><h2>Últimas leituras</h2></div></div>
             {events.length === 0 ? <p className="empty">Nenhuma leitura registrada ainda.</p> : (
               <div className="events">
-                {events.slice(0, 8).map((event) => <div className="event" key={event.id}>
+                {events.slice(0, 8).map((event) => <div className={`event ${event.result}`} key={event.id}>
                   <div><strong>{event.code}</strong><span>{event.message}{event.offline ? ' • offline' : ''}</span></div>
                   <time>{event.at}</time>
                 </div>)}
