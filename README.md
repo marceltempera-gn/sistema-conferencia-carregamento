@@ -8,7 +8,7 @@ O objetivo é demonstrar como tecnologia, automação de processos e desenvolvim
 
 ## Demo
 
-A aplicação está pronta e com build validado. O link público de hospedagem será adicionado aqui assim que o deploy externo for concluído.
+🌐 **Aplicação online:** https://sistema-conferencia-carregamento.vercel.app/
 
 Romaneio fictício utilizado na demonstração: `ROM-2026-001`
 
@@ -57,6 +57,7 @@ A tela também mantém um pequeno histórico de auditoria e possui um modo offli
 - Git
 - GitHub
 - GitHub Actions
+- Vercel
 
 ## Conceitos aplicados
 
@@ -71,6 +72,7 @@ A tela também mantém um pequeno histórico de auditoria e possui um modo offli
 - responsividade;
 - versionamento;
 - CI/CD;
+- deploy contínuo;
 - segurança e sanitização de informações.
 
 ## API demonstrativa
@@ -128,7 +130,6 @@ npm run preview
 
 ## Próximas evoluções
 
-- publicar a demo em hospedagem externa;
 - adicionar leitura por câmera em navegadores compatíveis;
 - separar a camada de Mock API do frontend;
 - criar backend demonstrativo independente;
