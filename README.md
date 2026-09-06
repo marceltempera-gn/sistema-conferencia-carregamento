@@ -8,7 +8,7 @@ O objetivo é demonstrar como tecnologia, automação de processos e desenvolvim
 
 ## Demo
 
-**Aplicação:** https://marceltempera-gn.github.io/sistema-conferencia-carregamento/
+A aplicação está pronta e com build validado. O link público de hospedagem será adicionado aqui assim que o deploy externo for concluído.
 
 Romaneio fictício utilizado na demonstração: `ROM-2026-001`
 
@@ -57,7 +57,6 @@ A tela também mantém um pequeno histórico de auditoria e possui um modo offli
 - Git
 - GitHub
 - GitHub Actions
-- GitHub Pages
 
 ## Conceitos aplicados
 
@@ -104,7 +103,7 @@ Durante a exploração técnica da solução original, também houve contato com
 
 ```text
 .
-├── .github/workflows/      # deploy automático
+├── .github/workflows/      # validação automática de build
 ├── docs/                   # documentação técnica
 ├── src/                    # aplicação React/TypeScript
 ├── index.html
@@ -129,6 +128,7 @@ npm run preview
 
 ## Próximas evoluções
 
+- publicar a demo em hospedagem externa;
 - adicionar leitura por câmera em navegadores compatíveis;
 - separar a camada de Mock API do frontend;
 - criar backend demonstrativo independente;
