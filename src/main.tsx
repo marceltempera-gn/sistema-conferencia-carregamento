@@ -129,6 +129,18 @@ function App() {
     if (offline) setQueue((current) => [...current, code])
   }
 
+  function demonstrateDuplicate() {
+    const code = 'P000001-001'
+
+    if (!acceptedSet.has(code)) {
+      setAccepted((current) => current.includes(code) ? current : [...current, code])
+      addEvent(code, 'accepted', 'Peça conferida para preparar teste de duplicidade')
+    }
+
+    setNotice({ type: 'warning', text: 'Esta peça já foi conferida.' })
+    addEvent(code, 'duplicate', 'Leitura duplicada')
+  }
+
   function submit(event: FormEvent) {
     event.preventDefault()
     if (!scan.trim()) return
@@ -228,7 +240,7 @@ function App() {
           <div className="test-codes">
             <span>Códigos rápidos para testar:</span>
             <button className="quick-success" onClick={() => applyScan('P000001-001')}>✓ Correta</button>
-            <button className="quick-warning" onClick={() => applyScan('P000001-001')}>! Duplicada</button>
+            <button className="quick-warning" onClick={demonstrateDuplicate}>! Duplicada</button>
             <button className="quick-error" onClick={() => applyScan('P000002-001')}>× Outro romaneio</button>
             <button className="quick-neutral" onClick={() => applyScan('ABC-123')}>? Inválida</button>
           </div>
